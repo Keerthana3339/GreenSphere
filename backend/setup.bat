@@ -54,7 +54,7 @@ if not exist ".env" (
     echo.
     echo [IMPORTANT] Edit .env file and add your PlantID API key:
     echo.
-    echo   PLANTID_API_KEY=your_api_key_here
+    echo   PLANTID_API_KEYS=your_api_key_here
     echo.
     echo Get a free API key from: https://plant.id/
     echo.

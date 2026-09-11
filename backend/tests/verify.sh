@@ -48,12 +48,12 @@ if [ ! -f ".env" ]; then
     echo "   Get free key from: https://plant.id/"
     echo ""
     echo "   Edit: backend/.env"
-    echo "   Add: PLANTID_API_KEY=your_key_here"
+    echo "   Add: PLANTID_API_KEYS=your_key_here"
     exit 0
 fi
 
 # Test API key
-if grep -q "PLANTID_API_KEY=your_plantid_api_key_here" .env; then
+if grep -q "PLANTID_API_KEYS=your_plantid_api_key_here" .env; then
     echo "⚠️  WARNING: API key not configured in .env"
     echo "   Get key from: https://plant.id/"
     exit 0

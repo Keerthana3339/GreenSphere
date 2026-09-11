@@ -163,8 +163,13 @@
         btn.disabled = true;
         btn.textContent = 'Logging in...';
 
+        // Use the page origin when served by Flask; retain localhost for direct file access.
+        const backendOrigin = window.location.protocol === 'file:'
+            ? 'http://localhost:5000'
+            : window.location.origin;
+
         // Send login request to backend
-        fetch('http://localhost:5000/api/auth/login', {
+        fetch(`${backendOrigin}/api/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

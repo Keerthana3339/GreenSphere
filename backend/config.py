@@ -1,7 +1,8 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BACKEND_DIR, '.env'))
 
 class Config:
     """Base configuration"""
@@ -9,11 +10,18 @@ class Config:
     TESTING = False
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
     # Plant.id API Configuration with key rotation support
-    PLANTID_API_KEYS = os.getenv('PLANTID_API_KEYS', '').split(',') if os.getenv('PLANTID_API_KEYS') else []
+    PLANTID_API_KEYS = [
+        key.strip()
+        for key in os.getenv('PLANTID_API_KEYS', '').split(',')
+        if key.strip()
+    ]
     PLANTID_API_KEY = os.getenv('PLANTID_API_KEY', '')  # legacy single key
     PLANTID_API_KEY_BACKUP = os.getenv('PLANTID_API_KEY_BACKUP', '')  # legacy backup
     PLANTID_API_URL = os.getenv('PLANTID_API_URL', 'https://api.plant.id/v3')
-    CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:5000').split(',')
+    CORS_ALLOWED_ORIGINS = os.getenv(
+        'CORS_ALLOWED_ORIGINS',
+        'http://localhost:5000,http://127.0.0.1:5000,null'
+    ).split(',')
     
     # Gemini API Configuration with key rotation support
     GEMINI_API_KEYS = os.getenv('GEMINI_API_KEYS', '').split(',') if os.getenv('GEMINI_API_KEYS') else []

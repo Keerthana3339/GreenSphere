@@ -32,6 +32,6 @@ NOTE: First debug visualization request will initialize SAM model
 
 GEMINI API: Optional (uses fallback plant database if not configured)
 ============================================================""")
-    # threaded=False prevents issues with SAM model
+    # Keep requests independent so a slow analysis cannot block login or health checks.
     # use_reloader=False prevents double-loading the model
-    app.run(debug=True, host='0.0.0.0', port=5000, threaded=False, use_reloader=False)
+    app.run(debug=True, host='0.0.0.0', port=5000, threaded=True, use_reloader=False)
