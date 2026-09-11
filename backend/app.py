@@ -41,8 +41,19 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Get parent directory (where HTML files are)
-FRONTEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Frontend files are kept outside the backend application.
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FRONTEND_DIR = os.path.join(PROJECT_DIR, 'frontend')
+FRONTEND_PAGES_DIR = os.path.join(FRONTEND_DIR, 'pages')
+FRONTEND_JS_DIR = os.path.join(FRONTEND_DIR, 'js')
+FRONTEND_CSS_DIR = os.path.join(FRONTEND_DIR, 'css')
+FRONTEND_ASSETS_DIR = os.path.join(FRONTEND_DIR, 'assets')
+LEGACY_ASSET_DIRS = {
+    'plants': os.path.join(FRONTEND_ASSETS_DIR, 'plants pics'),
+    'disease pics': os.path.join(FRONTEND_ASSETS_DIR, 'disease pics'),
+    'my garden pics': os.path.join(FRONTEND_ASSETS_DIR, 'my garden pics'),
+    'nursery order pics': os.path.join(FRONTEND_ASSETS_DIR, 'nursery order pics'),
+}
 
 
 def create_app(config_name='development'):
@@ -104,7 +115,7 @@ def create_app(config_name='development'):
     # Serve frontend HTML files
     @app.route('/')
     def serve_index():
-        return send_from_directory(FRONTEND_DIR, 'index.html')
+        return send_from_directory(FRONTEND_PAGES_DIR, 'index.html')
     
     @app.route('/<path:filename>')
     def serve_static(filename):
@@ -113,13 +124,28 @@ def create_app(config_name='development'):
             return jsonify({'error': 'Not found'}), 404
         
         try:
-            # Check if file exists in FRONTEND_DIR
-            file_path = os.path.join(FRONTEND_DIR, filename)
-            if os.path.isfile(file_path):
-                return send_from_directory(FRONTEND_DIR, filename)
-            else:
-                logger.warning(f'File not found: {filename}')
-                return jsonify({'error': 'Not found'}), 404
+            # Keep existing page references working while assets are consolidated.
+            for prefix, directory in LEGACY_ASSET_DIRS.items():
+                if filename == prefix or filename.startswith(f'{prefix}/'):
+                    asset_name = filename[len(prefix):].lstrip('/')
+                    asset_path = os.path.join(directory, asset_name)
+                    if os.path.isfile(asset_path):
+                        return send_from_directory(directory, asset_name)
+
+            # Resolve pages first, then shared frontend assets and scripts.
+            for directory in (
+                FRONTEND_PAGES_DIR,
+                FRONTEND_DIR,
+                FRONTEND_JS_DIR,
+                FRONTEND_CSS_DIR,
+                FRONTEND_ASSETS_DIR,
+            ):
+                file_path = os.path.join(directory, filename)
+                if os.path.isfile(file_path):
+                    return send_from_directory(directory, filename)
+
+            logger.warning(f'File not found: {filename}')
+            return jsonify({'error': 'Not found'}), 404
         except Exception as e:
             logger.error(f'Error serving {filename}: {str(e)}')
             return jsonify({'error': 'Not found', 'details': str(e)}), 404
