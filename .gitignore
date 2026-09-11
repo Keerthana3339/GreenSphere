@@ -1,0 +1,60 @@
+# Secrets and credentials
+backend/token.json
+backend/credentials.json
+backend/.env
+token.json
+credentials.json
+.env
+.env.local
+.env.production
+.env.development
+
+# Old backup files
+*.old
+*.bak
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*$py.class
+
+# Logs
+*.log
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+
+# Databases
+*.sqlite3
+*.db
+
+# Node modules
+node_modules/
+
+# Frontend build folders
+frontend/dist/
+frontend/.vite/
+frontend/.next/
+frontend/.nuxt/
+
+# Lock files
+ffend/GreenSphere/package-lock.json
+ffend/GreenSphere/yarn.lock
+
+# IDE files
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
